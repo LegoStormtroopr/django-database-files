@@ -11,7 +11,7 @@ simpler to store files in the database.
 
 Requires:
 
-  * Django 1.1
+  * Django 1.9 (Django 1.8 should work but is untested so far)
 
 Installation
 ------------

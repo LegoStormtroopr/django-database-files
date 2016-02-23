@@ -15,6 +15,6 @@ def serve(request, name):
         raise Http404('Filename is not an integer')
     f = get_object_or_404(File, pk=pk)
     mimetype = mimetypes.guess_type(name)[0] or 'application/octet-stream'
-    response = HttpResponse(base64.b64decode(f.content), mimetype=mimetype)
+    response = HttpResponse(base64.b64decode(f.content), content_type=mimetype)
     response['Content-Length'] = f.size
     return response
