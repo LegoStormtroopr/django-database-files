@@ -25,6 +25,11 @@ In ``settings.py``, add ``database_files`` to your ``INSTALLED_APPS`` and add th
 
     DEFAULT_FILE_STORAGE = 'database_files.storage.DatabaseStorage'
 
+In your ``urls.py`` add a path to the database files:
+
+    url(r'^db_static/', include("database_files.urls")),
+
+
 Although ``upload_to`` is a required argument on ``FileField``, it is not used for 
 storing files in the database. Just set it to a dummy value:
 
