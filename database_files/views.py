@@ -6,7 +6,6 @@ import mimetypes
 from database_files.models import File
 import os
 
-
 @cache_control(max_age=86400)
 def serve(request, name):
     pk, file_ext = os.path.splitext(name)
