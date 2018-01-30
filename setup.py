@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
 
 
 setup(
-    name='django-database-files',
+    name='django-database-files-ny',
     version='0.2.0',
     description='A storage system for Django that stores uploaded files in the database.',
     author='Sam Spencer',

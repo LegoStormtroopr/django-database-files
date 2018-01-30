@@ -25,7 +25,7 @@ Requires:
 Installation
 ------------
 
-    $ python setup.py install
+    $ pip install django-database-files-ny
 
 Usage
 -----
