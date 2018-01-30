@@ -41,5 +41,5 @@ database.
 Test suite
 ----------
 
-    $ ./run_tests.sh
+    $ tox
 
