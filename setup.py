@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='django-database-files',
-    version='0.2',
+    version='0.2.0',
     description='A storage system for Django that stores uploaded files in the database.',
     author='Sam Spencer',
     author_email='sam@aristotlemetadata.com',

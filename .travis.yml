@@ -1,15 +1,18 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
+- '3.5'
+- '3.6'
 install:
-  - pip install tox
-# before_script:
-#   - pep8 --ignore=E501,E225,E123 django_spaghetti 
-#   - cd docs ; sphinx-build -nW -b html -d _build/doctrees . _build/html ; cd ..
-# command to run tests
+- pip install tox
 script:
-  - tox
+- tox
 after_success:
-  - coveralls
-  
+- coveralls
+deploy:
+  provider: pypi
+  user: "Samuel.Spencer"
+  password:
+    secure: IpJuYrTkutnCuIzI61JnXoP9qkCGvvmc0wE8oBIn9HFyhWVyPw2qbNTQp58lOMOf2UVm24c3iA3Pax+1J8g9q9N144rMkgBpg5dot8KT3mt9u5TDupnKiLLl66IFh2/B68MTbx33ZCu6rCNAE49wlKGdRAf7EWIXVMJ1D7bzjtC0L5aTtML1yOc0sbsXxpFr3D0jkxP5VsTulPkKIbUrjYkphNWSLc4kobapqCwRE8tLvd50obJjl/IqGv1K+19l2TNiniDETB7R48fRenZkOIVG97y0yUP4EM71mxATU4pb/UpbenpzkhpUM+VsnUMTRht8p85Yn736m/wEmef6rCz5wccdusRW5pwy/+fJcGjci6f3Y+nWM7ZNsFmV9TvKYEhRbHWknNPWohRqSuuBHYEnX5jzosBIij1TDSpNJUXvs9GTQfSGwlEyviJUmX6f2Km1K2fdqw5FkXR9tUJyt8ezdfm4bc13DfDpeb5W1m/8dkE8ulO7TS4yp9KXqBYjkn5CduhU75lwZ+lhKfEbEzUrqoAyf4p/6wLV6J8YeEn7+BdmNp8m7lXUxZ21sIv6XacihdsGG1pqoqNNjlTLx2zm7ygtm3OyVFvz21aXBZAaGzlVeWaOcgyDMlEW+rveQ6MVgAydevX+ztzFpUCJEi2xYDTCZwt+1emFrjNWWms=
+  on:
+    branch: master
+    condition: $TRAVIS_PYTHON_VERSION == 3.6
