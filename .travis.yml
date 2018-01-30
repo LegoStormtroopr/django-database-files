@@ -5,11 +5,6 @@ python:
   - "3.6"
 install:
   - pip install tox
-# command to install dependencies
-#   - "pip install coveralls"
-#   - pip install pep8
-#   - pip install -q Django==$DJANGO
-#   - "pip install ."
 # before_script:
 #   - pep8 --ignore=E501,E225,E123 django_spaghetti 
 #   - cd docs ; sphinx-build -nW -b html -d _build/doctrees . _build/html ; cd ..
