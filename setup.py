@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
     name='django-database-files-ny',
-    version='0.2.0',
+    version='0.2.1',
+    packages=find_packages(),
     description='A storage system for Django that stores uploaded files in the database.',
     author='Sam Spencer',
     author_email='sam@aristotlemetadata.com',
