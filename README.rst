@@ -2,7 +2,7 @@ django-database-files
 =====================
 
 ``django-database-files`` is a storage system for Django that stores files in the database.
-It can act as a storage class anywhere
+It can act as a storage class anywhere that accepts the `Django storage API <https://docs.djangoproject.com/en/2.0/ref/files/storage/>`_.
 
 WARNING: There are serious downsides to storing and serving static files from Django,
 but there are some valid use cases.
@@ -27,11 +27,11 @@ Installation
 Usage
 -----
 
-In ``settings.py``, add ``database_files`` to your ``INSTALLED_APPS`` and add this line:
+In ``settings.py``, add ``database_files`` to your ``INSTALLED_APPS`` and add this line::
 
     DEFAULT_FILE_STORAGE = 'database_files.storage.DatabaseStorage'
 
-In your ``urls.py`` add a path to the database files:
+In your ``urls.py`` add a path to the database files::
 
     url(r'^db_static/', include("database_files.urls")),
 
