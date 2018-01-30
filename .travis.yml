@@ -1,7 +1,10 @@
 language: python
 python:
-  - "3.5"
   - "3.6"
+env:
+  matrix:
+    - TOXENV="py35"
+    - TOXENV="py36"
 install:
   - pip install tox
 # before_script:
@@ -9,7 +12,7 @@ install:
 #   - cd docs ; sphinx-build -nW -b html -d _build/doctrees . _build/html ; cd ..
 # command to run tests
 script:
-  - tox --skip-missing-interpreters
+  - tox -e $TOXENV
 after_success:
   - coveralls
   
