@@ -9,3 +9,11 @@ INSTALLED_APPS = [
     'database_files.tests',
 ]
 DEFAULT_FILE_STORAGE = 'database_files.storage.DatabaseStorage'
+SECRET_KEY = "not a secret"
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ":memory:"
+    }
+}

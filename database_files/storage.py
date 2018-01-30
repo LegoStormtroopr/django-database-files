@@ -1,57 +1,125 @@
 import base64
 from database_files import models
 from django.core import files
+from django.core.files.base import File
 from django.core.files.storage import Storage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
+from django.utils._os import safe_join
 import os
-import StringIO
+from io import StringIO, BytesIO
+
+class DBFile(File):
+
+    """
+    A file returned from the database.
+    """
+
+    def __init__(self, file, name, storage):
+        super().__init__(file, name)
+        self._storage = storage
+
+    def open(self, mode="rb"):
+        # if self.closed:
+        self.file = self._storage.open(self.name, mode).file
+        return super().open(mode)
+
 
 class DatabaseStorage(Storage):
-    def _generate_name(self, name, pk):
-        """
-        Replaces the filename with the specified pk and removes any dir
-        """
-        dir_name, file_name = os.path.split(name)
-        file_root, file_ext = os.path.splitext(file_name)
-        return '%s%s' % (pk, file_ext)
-    
+
+    def _make_name(self, name):
+        if name.startswith("/"):
+            name = name[1:]
+        name = "/"+name.lstrip("/")
+        
+        return name
+
     def _open(self, name, mode='rb'):
+        name = self._make_name(name)
         try:
-            f = models.File.objects.get_from_name(name)
-        except models.File.DoesNotExist:
+            f = models.FileInDatabase.objects.get(name=name)
+        except models.FileInDatabase.DoesNotExist:
             return None
-        fh = StringIO.StringIO(base64.b64decode(f.content))
+
+        if 'b' in mode:
+            fh = BytesIO(base64.b64decode(f.content))
+        else:
+            fh = StringIO(base64.b64decode(f.content).decode('utf-8'))
         fh.name = name
         fh.mode = mode
         fh.size = f.size
-        return files.File(fh)
+        return DBFile(fh, name, self)
     
     def _save(self, name, content):
-        f = models.File.objects.create(
-            content=base64.b64encode(content.read()),
+        name = self._make_name(name)
+        if 'b' in content.mode:
+            _content = content.read()
+        else:
+            _content = content.read().encode('utf-8')
+        f = models.FileInDatabase.objects.update_or_create(
+            content=base64.b64encode(_content),
             size=content.size,
+            name=name,
         )
-        return self._generate_name(name, f.pk)
-    
+        return name
+
     def exists(self, name):
-        """
-        We generate a new filename for each file, so it will never already 
-        exist.
-        """
-        return False
+        name = self._make_name(name)
+        return models.FileInDatabase.objects.filter(name=name).exists()
+
     
     def delete(self, name):
+        name = self._make_name(name)
         try:
-            models.File.objects.get_from_name(name).delete()
-        except models.File.DoesNotExist:
+            models.FileInDatabase.objects.get(name=name).delete()
+        except models.FileInDatabase.DoesNotExist:
             pass
     
-    def url(self, name):
-        return reverse('database_file', kwargs={'name': name})
+    # def url(self, name):
+    #     return reverse('database_file', kwargs={'name': name})
     
     def size(self, name):
+        name = self._make_name(name)
         try:
-            return models.File.objects.get_from_name(name).size
-        except models.File.DoesNotExist:
+            return models.FileInDatabase.objects.get(name=name).size
+        except models.FileInDatabase.DoesNotExist:
             return 0
 
+    def listdir(self, path):
+        path = self._make_name(path)
+        # if not path.endswith("/"):
+        path = path.rstrip("/") + "/"
+        results = list(
+            models.FileInDatabase.objects.filter(name__startswith=path).values_list("name", flat=True)
+        )
+
+        files = []
+        dirs = []
+        path = path.rstrip("/")
+        sub_path=len(path.split("/"))
+        for r in results:
+            parts = r.split("/")[sub_path:]
+            # If there is only one more part its a file
+            if len(parts) == 1:
+                files.append(parts[0])
+            else:
+                dirs.append(parts[0])
+        dirs = list(set(dirs))
+        files.sort()
+        dirs.sort()
+        return dirs, files
+
+    def get_created_time(self, name):
+        name = self._make_name(name)
+        try:
+            f = models.FileInDatabase.objects.get(name=name)
+            return f.created_at
+        except models.FileInDatabase.DoesNotExist:
+            return None
+    
+    def get_modified_time(self, name):
+        name = self._make_name(name)
+        try:
+            f = models.FileInDatabase.objects.get(name=name)
+            return f.modified_at
+        except models.FileInDatabase.DoesNotExist:
+            return None

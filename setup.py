@@ -4,19 +4,22 @@ from distutils.core import setup
  
 setup(
     name='django-database-files',
-    version='0.1',
+    version='0.2',
     description='A storage system for Django that stores uploaded files in the database.',
-    author='Ben Firshman',
-    author_email='ben@firshman.co.uk',
-    url='http://github.com/bfirsh/django-database-files/',
+    author='Sam Spencer',
+    author_email='sam@aristotlemetadata.com',
+    url='http://github.com/legostormtroopr/django-database-files/',
     packages=[
         'database_files',
     ],
-    classifiers=['Development Status :: 4 - Beta',
-                 'Framework :: Django',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: BSD License',
-                 'Operating System :: OS Independent',
-                 'Programming Language :: Python',
-                 ],
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+    ],
+    install_requires=[
+    ]
 )
