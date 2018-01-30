@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from distutils.core import setup
- 
+
+
 setup(
     name='django-database-files',
     version='0.2',

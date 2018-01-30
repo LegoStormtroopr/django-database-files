@@ -1,14 +1,13 @@
-# from django.core.files.temp import NamedTemporaryFile
 from tempfile import NamedTemporaryFile
 from django.core import files
 from django.test import TestCase
 from database_files.models import FileInDatabase
 from database_files.tests.models import Thing
-# from io import StringIO
 import os
 from django.core.files.storage import default_storage
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 class DatabaseFilesTestCase(TestCase):
     def test_adding_text_file(self):
@@ -17,8 +16,8 @@ class DatabaseFilesTestCase(TestCase):
         )
         test_file.write('1234567890')
         test_file.close()
-        
-        f = open(test_file.name, mode="r+b") #.read()
+
+        f = open(test_file.name, mode="r+b")
 
         t = Thing.objects.create(
             upload=files.File(f, name=f.name.lstrip('/')),
@@ -46,10 +45,10 @@ class DatabaseFilesTestCase(TestCase):
         os.unlink(f.name)
 
     def test_adding_binary_file(self):
-        lena = os.path.join(this_dir,"files","lena.png")
+        lena = os.path.join(this_dir, "files", "lena.png")
         f = open(lena, mode="rb")
         size = os.path.getsize(lena)
-        
+
         t = Thing.objects.create(
             upload=files.File(f, name="images/lena.png"),
         )
@@ -60,8 +59,8 @@ class DatabaseFilesTestCase(TestCase):
         self.assertTrue(t.upload.file.name.endswith('.png'))
         self.assertEqual(t.upload.file.name, "/documents/images/lena.png")
         self.assertTrue(default_storage.exists("/documents/images/lena.png"))
-        
-        from PIL import Image 
+
+        from PIL import Image
 
         t.upload.file.open(mode="rb")
         i1 = Image.open(t.upload.file)
@@ -69,27 +68,25 @@ class DatabaseFilesTestCase(TestCase):
         self.assertEqual(i1.size, i2.size)
 
     def test_listing_directory(self):
-        import glob
-        
-        files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files")
+        files_dir = os.path.join(this_dir, "files")
         num_files = 0
-        for subdir, dirs, files in os.walk(files_dir):
-            subdir = subdir[len(files_dir)+1:]
-            for fn in files:
+        for subdir, dirs, _files in os.walk(files_dir):
+            subdir = subdir[len(files_dir) + 1:]
+            for fn in _files:
                 num_files += 1
                 with open(os.path.join(files_dir, subdir, fn), 'rb') as f:
                     path = os.path.join("mydocs", subdir, fn)
-                    x=default_storage.save(name=path, content=f) #.read())
+                    default_storage.save(name=path, content=f)
 
-        for subdir, dirs, files in os.walk(files_dir):
-            subdir = subdir[len(files_dir)+1:]
+        for subdir, dirs, _files in os.walk(files_dir):
+            subdir = subdir[len(files_dir) + 1:]
             path = os.path.join("mydocs", subdir)
             listed_dirs, listed_files = default_storage.listdir(path)
-            self.assertEqual(listed_dirs,sorted(dirs))
-            self.assertEqual(listed_files,sorted(files))
+            self.assertEqual(listed_dirs, sorted(dirs))
+            self.assertEqual(listed_files, sorted(_files))
 
     def test_access_times(self):
-        qqq = os.path.join(this_dir,"files","qq", "qqqq.qqq")
+        qqq = os.path.join(this_dir, "files", "qq", "qqqq.qqq")
         f = open(qqq, mode="rb")
 
         t = Thing.objects.create(

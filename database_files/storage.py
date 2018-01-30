@@ -1,12 +1,10 @@
 import base64
 from database_files import models
-from django.core import files
 from django.core.files.base import File
 from django.core.files.storage import Storage
-from django.urls import reverse
-from django.utils._os import safe_join
-import os
+# from django.urls import reverse
 from io import StringIO, BytesIO
+
 
 class DBFile(File):
 
@@ -27,10 +25,7 @@ class DBFile(File):
 class DatabaseStorage(Storage):
 
     def _make_name(self, name):
-        if name.startswith("/"):
-            name = name[1:]
-        name = "/"+name.lstrip("/")
-        
+        name = "/" + name.lstrip("/")
         return name
 
     def _open(self, name, mode='rb'):
@@ -48,35 +43,36 @@ class DatabaseStorage(Storage):
         fh.mode = mode
         fh.size = f.size
         return DBFile(fh, name, self)
-    
+
     def _save(self, name, content):
         name = self._make_name(name)
         if 'b' in content.mode:
             _content = content.read()
         else:
             _content = content.read().encode('utf-8')
-        f = models.FileInDatabase.objects.update_or_create(
+
+        models.FileInDatabase.objects.create(
             content=base64.b64encode(_content),
             size=content.size,
             name=name,
         )
+
         return name
 
     def exists(self, name):
         name = self._make_name(name)
         return models.FileInDatabase.objects.filter(name=name).exists()
 
-    
     def delete(self, name):
         name = self._make_name(name)
         try:
             models.FileInDatabase.objects.get(name=name).delete()
         except models.FileInDatabase.DoesNotExist:
             pass
-    
+
     # def url(self, name):
     #     return reverse('database_file', kwargs={'name': name})
-    
+
     def size(self, name):
         name = self._make_name(name)
         try:
@@ -86,27 +82,27 @@ class DatabaseStorage(Storage):
 
     def listdir(self, path):
         path = self._make_name(path)
-        # if not path.endswith("/"):
+
         path = path.rstrip("/") + "/"
         results = list(
             models.FileInDatabase.objects.filter(name__startswith=path).values_list("name", flat=True)
         )
 
-        files = []
+        _files = []
         dirs = []
         path = path.rstrip("/")
-        sub_path=len(path.split("/"))
+        sub_path = len(path.split("/"))
         for r in results:
             parts = r.split("/")[sub_path:]
             # If there is only one more part its a file
             if len(parts) == 1:
-                files.append(parts[0])
+                _files.append(parts[0])
             else:
                 dirs.append(parts[0])
         dirs = list(set(dirs))
-        files.sort()
+        _files.sort()
         dirs.sort()
-        return dirs, files
+        return dirs, _files
 
     def get_created_time(self, name):
         name = self._make_name(name)
@@ -115,7 +111,7 @@ class DatabaseStorage(Storage):
             return f.created_at
         except models.FileInDatabase.DoesNotExist:
             return None
-    
+
     def get_modified_time(self, name):
         name = self._make_name(name)
         try:

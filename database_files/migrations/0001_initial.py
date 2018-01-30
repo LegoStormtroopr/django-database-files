@@ -16,12 +16,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FileInDatabase',
             fields=[
-                # ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.TextField(primary_key=True)),
-                ('content', models.BinaryField()),
                 ('size', models.IntegerField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('modified_at', models.DateTimeField(auto_now=True)),
+                ('content', models.BinaryField()),
             ],
         ),
     ]
