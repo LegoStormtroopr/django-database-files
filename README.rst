@@ -1,6 +1,9 @@
 django-database-files
 =====================
 
+.. image:: https://travis-ci.org/LegoStormtroopr/django-database-files.svg?branch=master
+    :target: https://travis-ci.org/LegoStormtroopr/django-database-files
+
 ``django-database-files`` is a storage system for Django that stores files in the database.
 It can act as a storage class anywhere that accepts the `Django storage API <https://docs.djangoproject.com/en/2.0/ref/files/storage/>`_.
 
