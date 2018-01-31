@@ -1,0 +1,4 @@
+include LICENSE
+include README.rst
+recursive-include database_files/ *
+exclude MANIFEST.in
