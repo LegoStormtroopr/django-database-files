@@ -2,7 +2,7 @@ import base64
 from database_files import models
 from django.core.files.base import File
 from django.core.files.storage import Storage
-# from django.urls import reverse
+from django.urls import reverse
 from io import StringIO, BytesIO
 
 
@@ -46,10 +46,10 @@ class DatabaseStorage(Storage):
 
     def _save(self, name, content):
         name = self._make_name(name)
-        if 'b' in content.mode:
-            _content = content.read()
-        else:
-            _content = content.read().encode('utf-8')
+        # if 'b' in content.mode:
+        _content = content.read()
+        # else:
+        #     _content = content.read().encode('utf-8')
 
         models.FileInDatabase.objects.create(
             content=base64.b64encode(_content),
@@ -70,8 +70,8 @@ class DatabaseStorage(Storage):
         except models.FileInDatabase.DoesNotExist:
             pass
 
-    # def url(self, name):
-    #     return reverse('database_file', kwargs={'name': name})
+    def url(self, name):
+        return reverse('database_file', kwargs={'name': name})
 
     def size(self, name):
         name = self._make_name(name)

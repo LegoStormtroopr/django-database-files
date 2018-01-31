@@ -10,12 +10,15 @@ import os
 
 
 def get_image(name):
-    pk, file_ext = os.path.splitext(name)
-    try:
-        pk = int(pk)
-    except ValueError:
-        raise Http404('Filename is not an integer')
-    f = get_object_or_404(FileInDatabase, pk=pk)
+    # pk, file_ext = os.path.splitext(name)
+    # try:
+    #     pk = int(pk)
+    # except ValueError:
+    #     raise Http404('Filename is not an integer')
+    name = "/" + name.lstrip("/")
+    print(name)
+    f = get_object_or_404(FileInDatabase, name=name)
+    
     return f
 
 
