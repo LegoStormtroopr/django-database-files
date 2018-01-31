@@ -11,9 +11,6 @@ setup(
     author='Sam Spencer',
     author_email='sam@aristotlemetadata.com',
     url='http://github.com/legostormtroopr/django-database-files/',
-    packages=[
-        'database_files',
-    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Django',
