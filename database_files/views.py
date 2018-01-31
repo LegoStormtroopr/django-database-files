@@ -1,30 +1,23 @@
 import base64
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_control
 import mimetypes
 from database_files.models import FileInDatabase
-import os
+# import os
 # from PIL import Image
 # from io import StringIO
 
 
-def get_image(name):
-    # pk, file_ext = os.path.splitext(name)
-    # try:
-    #     pk = int(pk)
-    # except ValueError:
-    #     raise Http404('Filename is not an integer')
+def get_file(name):
     name = "/" + name.lstrip("/")
-    print(name)
     f = get_object_or_404(FileInDatabase, name=name)
-    
     return f
 
 
 @cache_control(max_age=86400)
 def serve(request, name):
-    f = get_image(name)
+    f = get_file(name)
     return return_image_response(name, base64.b64decode(f.content), f.size)
 
 
